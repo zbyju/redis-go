@@ -38,8 +38,18 @@ func handleConnection(c net.Conn) {
 		}
 
 		input := string(buffer[:len])
-		logic.ParseCommand(input)
+		cmd, err := logic.ParseCommand(input)
+		if err != nil {
+			fmt.Println("Error parsing the command: ", err.Error())
+			return
+		}
 
-		c.Write([]byte("+PONG\r\n"))
+		res, err := cmd.Execute()
+		if err != nil {
+			fmt.Println("Error executing the command: ", err.Error())
+			return
+		}
+
+		c.Write([]byte(fmt.Sprintf("+%s\r\n", *res)))
 	}
 }
