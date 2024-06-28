@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net"
 	"os"
+
+	"github.com/codecrafters-io/redis-starter-go/app/logic"
 )
 
 func main() {
@@ -29,11 +31,14 @@ func handleConnection(c net.Conn) {
 	fmt.Println("Handling new connection")
 	for {
 		buffer := make([]byte, 256)
-		_, err := c.Read(buffer)
+		len, err := c.Read(buffer)
 		if err != nil {
 			fmt.Println("Error reading from connection: ", err.Error())
 			return
 		}
+
+		input := string(buffer[:len])
+		logic.ParseCommand(input)
 
 		c.Write([]byte("+PONG\r\n"))
 	}
