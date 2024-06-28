@@ -13,14 +13,12 @@ type Cmd struct {
 
 func ParseArray(input *string, len int) ([]string, error) {
 	arr := []string{}
-	for _ = range len {
+	for range len {
 		parsed, err := ParseDecision(input)
 		if err != nil {
 			return nil, err
 		}
-		for _, x := range parsed {
-			arr = append(arr, x)
-		}
+		arr = append(arr, parsed...)
 	}
 	return arr, nil
 }
